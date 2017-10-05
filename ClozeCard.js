@@ -1,18 +1,26 @@
-// Constructor function for the 'Cloze Card'.
-function ClozeCard(text, cloze) {
-    this.text = text.split(cloze);
+// require fs
+var fs = require("fs");
+
+module.exports = ClozeFlashcard;
+
+// constructor for ClozeFlashcard
+function ClozeFlashcard(text, cloze) {
+    this.text = text;
     this.cloze = cloze;
-
-};
-
-// Constructor that creates a prototype of ClozeCard to return the question missing cloze
-function ClozeCardPrototype() {
-
-    this.clozeRemoved = function () {
-        return `${this.text[0]} ... ${this.text[1]}`;  //Template literal enclosed by the back-tick ` allows embedded expressions wrapped with ${}
-    };											
-};
-
-ClozeCard.prototype = new ClozeCardPrototype();
-
-module.exports = ClozeCard; 
+    this.clozeDeleted = this.text.replace(this.cloze, '_____');
+    this.create = function() {
+        var data = {
+            text: this.text,
+            cloze: this.cloze,
+            clozeDeleted: this.clozeDeleted,
+            type: "cloze"
+        };
+        // add card to log.txt
+        fs.appendFile("log.txt", JSON.stringify(data) + ';', "utf8", function(error) {
+            // if there is an error, log the error
+            if (error) {
+                console.log(error);
+            }
+        });
+    };
+}

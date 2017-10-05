@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/whit-scott/Flashcard-Generator#readme",
   "dependencies": {
-    "inquirer": "^3.3.0"
+    "inquirer": "^3.3.0",
+    "requirer": "0.0.4"
   }
 }
