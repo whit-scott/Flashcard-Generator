@@ -90,7 +90,7 @@ var addCard = function() {
                     newCloze.create();
                     whatsNext();
                 } else {
-                    console.log('The cloze portion you provided is not found in the full text. Please try again.');
+                    console.log('The cloze portion is not a match. Please try again.');
                     addCard();
                 }
             });
