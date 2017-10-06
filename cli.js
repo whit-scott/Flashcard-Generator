@@ -1,49 +1,43 @@
-// require basic flashcard module
-var BasicFlashcard = require('./BasicCard.js');
-// require cloze flashcard module
-var ClozeFlashcard = require('./ClozeCard.js');
-// require inquirer for getting user input at command line
+var BasicCard = require('./BasicCard.js');
+var ClozeCard = require('./ClozeCard.js');
 var inquirer = require('inquirer');
-// require fs
 var fs = require('fs');
 
 inquirer.prompt([{
     name: 'command',
-    message: 'What would you like to do?',
+    message: 'Select',
     type: 'list',
     choices: [{
-        name: 'add-flashcard'
+        name: 'add'
     }, {
-        name: 'show-all-cards'
+        name: 'show'
     }]
 }]).then(function(answer) {
-    if (answer.command === 'add-flashcard') {
+    if (answer.command === 'add') {
         addCard();
-    } else if (answer.command === 'show-all-cards') {
+    } else if (answer.command === 'show') {
         showCards();
     }
 });
 
 var addCard = function() {
-    // get user input
     inquirer.prompt([{
         name: 'cardType',
-        message: 'What kind of flashcard would you like to create?',
+        message: 'What kind of flashcard?',
         type: 'list',
         choices: [{
-            name: 'basic-flashcard'
+            name: 'basic'
         }, {
-            name: 'cloze-flashcard'
+            name: 'cloze'
         }]
-    // once user input is received
     }]).then(function(answer) {
-        if (answer.cardType === 'basic-flashcard') {
+        if (answer.cardType === 'basic') {
             inquirer.prompt([{
                 name: 'front',
                 message: 'What is the question?',
                 validate: function(input) {
                     if (input === '') {
-                        console.log('Please provide a question');
+                        console.log('Must provide a question');
                         return false;
                     } else {
                         return true;
@@ -54,24 +48,24 @@ var addCard = function() {
                 message: 'What is the answer?',
                 validate: function(input) {
                     if (input === '') {
-                        console.log('Please provide an answer');
+                        console.log('Must provide an answer');
                         return false;
                     } else {
                         return true;
                     }
                 }
             }]).then(function(answer) {
-                var newBasic = new BasicFlashcard(answer.front, answer.back);
+                var newBasic = new BasicCard(answer.front, answer.back);
                 newBasic.create();
                 whatsNext();
             });
-        } else if (answer.cardType === 'cloze-flashcard') {
+        } else if (answer.cardType === 'cloze') {
             inquirer.prompt([{
                 name: 'text',
                 message: 'What is the full text?',
                 validate: function(input) {
                     if (input === '') {
-                        console.log('Please provide the full text');
+                        console.log('Must provide the full text');
                         return false;
                     } else {
                         return true;
@@ -82,7 +76,7 @@ var addCard = function() {
                 message: 'What is the cloze portion?',
                 validate: function(input) {
                     if (input === '') {
-                        console.log('Please provide the cloze portion');
+                        console.log('Must provide the cloze portion');
                         return false;
                     } else {
                         return true;
@@ -92,7 +86,7 @@ var addCard = function() {
                 var text = answer.text;
                 var cloze = answer.cloze;
                 if (text.includes(cloze)) {
-                    var newCloze = new ClozeFlashcard(text, cloze);
+                    var newCloze = new ClozeCard(text, cloze);
                     newCloze.create();
                     whatsNext();
                 } else {
@@ -105,34 +99,30 @@ var addCard = function() {
 };
 
 var whatsNext = function() {
-    // get user input
     inquirer.prompt([{
         name: 'nextAction',
         message: 'What would you like to do next?',
         type: 'list',
         choices: [{
-            name: 'create-new-card'
+            name: 'create'
         }, {
-            name: 'show-all-cards'
+            name: 'show'
         }, {
-            name: 'nothing'
+            name: 'quit'
         }]
-    // once user input is received
     }]).then(function(answer) {
-        if (answer.nextAction === 'create-new-card') {
+        if (answer.nextAction === 'create') {
             addCard();
-        } else if (answer.nextAction === 'show-all-cards') {
+        } else if (answer.nextAction === 'show') {
             showCards();
-        } else if (answer.nextAction === 'nothing') {
+        } else if (answer.nextAction === 'quit') {
             return;
         }
     });
 };
 
 var showCards = function() {
-    // read the log.txt file
     fs.readFile('./log.txt', 'utf8', function(error, data) {
-        //if there is an error, log it
         if (error) {
             console.log('Error occurred: ' + error);
         }
@@ -163,12 +153,12 @@ var showQuestion = function(array, index) {
         message: questionText
     }]).then(function(answer) {
         if (answer.response === correctReponse) {
-            console.log('Correct!');
+            console.log('Correct');
             if (index < array.length - 1) {
               showQuestion(array, index + 1);
             }
         } else {
-            console.log('Wrong!');
+            console.log('Wrong');
             if (index < array.length - 1) {
               showQuestion(array, index + 1);
             }
